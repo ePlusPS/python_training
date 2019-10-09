@@ -1,0 +1,22 @@
+---
+- name: get facts from router
+  hosts: myrouter
+  connection: local    
+
+  tasks:
+    - name: print host name 
+      debug: 
+        msg:
+          - "{{ inventory_hostname }}" 
+
+    - name: get facts from router
+      iosxe_get_facts:
+        username: "User1"
+        password: "!Cisco123"
+        host: "{{ inventory_hostname }}"
+      register: facts
+
+    - name: print facts
+      debug: 
+        msg:
+          - "{{ facts }}" 

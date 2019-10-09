@@ -1,0 +1,37 @@
+---
+- name: add interface to router
+  hosts: myrouter
+  connection: local
+
+  tasks:
+    - include_vars: vars.yaml
+
+    - name: Set info
+      set_fact:
+        provider:
+            host: "{{ inventory_hostname }}"
+            username: "{{ username }}"
+            password: "{{ password }}"
+
+    - name: configure loopback interface settings
+      ios_config:
+        provider: "{{ provider }}"
+        lines:
+          - description test loopback interface
+          - ip address {{ ipaddr }} {{ netmask }}
+        parents: interface loopback11 
+
+    - name: configure access-list 
+      ios_config:
+        provider: "{{ provider }}"
+        lines:
+          - access-list 99 permit 172.16.10.1
+
+    - name: Verify access-list 
+      ios_command:
+        provider: "{{ provider }}"
+        commands:
+          - show access-list
+        waitfor:
+          - result[0] contains 'permit 172.16.10.1'
+
