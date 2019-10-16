@@ -74,13 +74,15 @@ print("Opening NETCONF Connection to {}".format("172.16.8.200"))
 with manager.connect(
         host="172.16.8.200",
         port=830,
-        username="User1",
+        username="user1",
         password='!Cisco123',
-        hostkey_verify=False
+        hostkey_verify=False,
+        look_for_keys=False,
+	device_params={'name': 'default'},
+	allow_agent=False
         ) as m:
 
     print("Sending a <edit-config> operation to the device.\n")
-    # Make a NETCONF <get-config> query using the filter
     netconf_reply = m.edit_config(netconf_data, target = 'running')
 
 print("Here is the raw XML data returned from the device.\n")
